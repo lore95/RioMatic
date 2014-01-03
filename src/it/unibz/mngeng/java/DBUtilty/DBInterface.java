@@ -1,4 +1,4 @@
-package it.unibz.mngeng.java.Utilty;
+package it.unibz.mngeng.java.DBUtilty;
 
 import it.unibz.mngeng.java.Exceptions.RMException;
 

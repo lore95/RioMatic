@@ -1,15 +1,13 @@
-package it.unibz.mngeng.java.Utilty;
+package it.unibz.mngeng.java.DBUtilty;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.StringTokenizer;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.sql.DataSource;
 
 import it.unibz.mngeng.java.Exceptions.RMException;
@@ -49,22 +47,12 @@ public class DBConnection
 		}
 		
     	String retVal = null;
-    	Context iCxt;
-		Context ctx;
-		Exception e1 = null;
+ 		Exception e1 = null;
 		try
 		{
-			iCxt = new InitialContext();
-			ctx = (Context) iCxt.lookup( "java:/comp/env" );
-		    ds = (DataSource) ctx.lookup("jdbc/tracker");
-			conn = ds.getConnection();
+			conn = DriverManager.getConnection("jdbc:mysql://192.168.200.99/RioMatic","RioMatic","RioMatic");;
 			st = conn.createStatement();
 		}
-		catch (NamingException e)
-		{
-			retVal = "Error getting database context details (" + e.getMessage() + ")";
-			e1 = e;
-		} 
 		catch (SQLException e) 
 		{
 			retVal = "Error on database connection (" + e.getMessage() + ")";
