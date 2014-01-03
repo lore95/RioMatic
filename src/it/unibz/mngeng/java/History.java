@@ -2,6 +2,9 @@ package it.unibz.mngeng.java;
 
 public class History {
 	private int id;
+	private String name;
+	private String location ;
+
 	public int getId() {
 		return id;
 	}
@@ -20,7 +23,4 @@ public class History {
 	public void setLocation(String location) {
 		this.location = location;
 	}
-	private String name;
-	private String location ;
-
 }

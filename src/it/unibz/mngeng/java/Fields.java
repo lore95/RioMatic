@@ -3,6 +3,9 @@ package it.unibz.mngeng.java;
 public class Fields {
 	
 	private int id;
+	private String name;
+	private String location ;
+
 	public int getId() {
 		return id;
 	}
@@ -21,6 +24,4 @@ public class Fields {
 	public void setLocation(String location) {
 		this.location = location;
 	}
-	private String name;
-	private String location ;
 }

@@ -3,6 +3,10 @@ package it.unibz.mngeng.java;
 public class Areas {
 	
 	private int id;
+	private int fieldId;
+	private double moistureMin;
+	private int wateringTime;
+
 	public int getId() {
 		return id;
 	}
@@ -27,8 +31,5 @@ public class Areas {
 	public void setWateringTime(int wateringTime) {
 		this.wateringTime = wateringTime;
 	}
-	private int fieldId;
-	private double moistureMin;
-	private int wateringTime;
 	
 }
