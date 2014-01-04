@@ -11,4 +11,21 @@ public class Utility
 		}
 		return sBuf.toString();
 	}
+	
+	static public String byteToBits(byte buf)
+	{
+		String retVal = "";
+		for(int i = 0; i < 8 ; i++)
+		{
+			if ((buf & (2^i)) != 0)
+			{
+				retVal += "1";
+			}
+			else
+			{
+				retVal += "0";
+			}
+		}
+		return retVal;
+	}
 }

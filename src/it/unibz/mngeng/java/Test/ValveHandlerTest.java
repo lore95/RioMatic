@@ -23,7 +23,7 @@ public class ValveHandlerTest {
 		{
 			appData = new DataStructures(parms);
 			Areas areas = new Areas();
-			areas.populateCollectionOnCondition("fieldId = " + parms.getFiledId(), Areas.class);
+			areas.populateCollectionOnCondition("WHERE fieldId = " + parms.getFiledId(), Areas.class);
 			assertTrue(true);
 		} 
 		catch (RMException e) 
