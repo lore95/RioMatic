@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-import it.unibz.mngeng.java.DBUtilty.Areas;
+import it.unibz.mngeng.java.DBUtility.Areas;
 import it.unibz.mngeng.java.Exceptions.RMException;
 
 

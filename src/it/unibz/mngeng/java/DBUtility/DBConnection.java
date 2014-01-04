@@ -1,4 +1,4 @@
-package it.unibz.mngeng.java.DBUtilty;
+package it.unibz.mngeng.java.DBUtility;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
