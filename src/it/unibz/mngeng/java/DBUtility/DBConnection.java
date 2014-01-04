@@ -75,26 +75,22 @@ public class DBConnection
     
 	protected void finalize() throws Throwable 
 	{
-		String objClose = "";
 		try 
 		{
 			ds = null;
 			rsm = null;
 			if (rs != null)
 			{
-				objClose = "result set";
 				rs.close();
 				rs = null;
 			}
 			if (st != null)
 			{
-				objClose = "statement";
 				st.close();
 				st = null;
 			}
 			if(conn != null)
 			{
-				objClose = "connection";
 				conn.close();
 				conn = null;
 			}
