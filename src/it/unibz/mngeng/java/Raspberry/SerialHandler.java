@@ -40,14 +40,6 @@ public class SerialHandler implements Runnable
 	@Override
 	public void run() 
 	{
-		System.out.println("THread Serial started");
-		System.out.println("Moisture at 3 = " + appData.getMoisture(3));
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
 		try 
 		{
 			while(!shutDown)
@@ -55,7 +47,7 @@ public class SerialHandler implements Runnable
 				readFromSerial();
 				double moistureValue = (buffer & MOISTURE_MASK) * ADDA_MOISTURE_CONVERSION_FACTOR;
 				int sensorId = (buffer & SENSOR_ADDR_MASK) >> 4;
-				System.out.println("Buffer '" + Utility.byteToBits(buffer) + " - Loggin moisture " + moistureValue + " @ " + sensorId);
+				System.out.println("Buffer '" + Utility.byteToBits(buffer) + " - Logging moisture " + moistureValue + " @ " + sensorId);
 				try
 				{
 					appData.setMoisture(sensorId, moistureValue, true);

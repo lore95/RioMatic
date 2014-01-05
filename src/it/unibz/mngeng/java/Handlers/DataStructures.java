@@ -12,8 +12,8 @@ public class DataStructures
 	static protected final int TYPE_MOISTURE = 0;
 	static protected final int TYPE_WATERING_TIME = 1;
 	static protected final int ITEM_LEN = 6;
-	static protected final String DATA_ITEM_FORMAT = "%0" + ITEM_LEN + ".2f";
-	static protected int RECORD_LEN = 0;
+	static public final String DATA_ITEM_FORMAT = "%0" + ITEM_LEN + ".2f";
+	static public int RECORD_LEN = 0;
 
 	private double[] moisture;
 	private boolean[] valveStatus;

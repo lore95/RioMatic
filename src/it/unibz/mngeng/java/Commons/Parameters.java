@@ -11,7 +11,7 @@ public class Parameters
 		return NUMBER_OF_SENSORS;
 	}
 	
-	public int getFiledId()
+	public int getFieldId()
 	{
 		return FIELD_ID;
 	}
