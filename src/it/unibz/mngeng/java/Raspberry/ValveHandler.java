@@ -18,7 +18,7 @@ import it.unibz.mngeng.java.DBUtility.Areas;
 import it.unibz.mngeng.java.Exceptions.RMException;
 import it.unibz.mngeng.java.Handlers.DataStructures;
 
-public class ValveHandler implements Runnable
+public class ValveHandler extends Thread
 {
 	final GpioController gpio = GpioFactory.getInstance();
 	private GpioPinDigitalOutput pin;
@@ -98,7 +98,7 @@ public class ValveHandler implements Runnable
 						appData.setWateringTimeElapsed(++i, instance, true);
 						if (i >= areaData.getWateringTime())
 						{
-							appData.setWateringTimeElapsed(0, instance, true);
+							appData.setWateringTimeElapsed(instance, 0, true);
 							appData.setValveStatus(instance, false);
 							secondsElapsed = 0;
 							pin.low();

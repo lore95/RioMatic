@@ -6,7 +6,7 @@ import java.util.Random;
 import it.unibz.mngeng.java.Commons.Utility;
 import it.unibz.mngeng.java.Handlers.DataStructures;
 
-public class SerialHandler implements Runnable
+public class SerialHandler extends Thread
 {
 	private static final int[] BYTE_BITS = new int[] {0x1, 0x2, 0x4, 0x8, 0x10, 0x20, 0x40, 0x80};
 	private static final int MOISTURE_MASK = 0x1 | 0x2 | 0x4 | 0x8;

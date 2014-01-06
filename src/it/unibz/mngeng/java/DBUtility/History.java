@@ -1,36 +1,44 @@
 package it.unibz.mngeng.java.DBUtility;
 
+import java.util.Date;
+
 import it.unibz.mngeng.java.Exceptions.RMException;
 
 public class History extends DBInterface
 {
 	private static final long serialVersionUID = -7844508274722236575L;
 	
-	protected int id;
-	protected String name;
-	protected String location ;
+	protected int areaId;
+	protected double mositure;
+	protected Date timestamp;
 	
 	public History() throws RMException
 	{
 		tableName = "History";
 	}
 
-	public int getId() {
-		return id;
+	public int getAreaId() {
+		return areaId;
 	}
-	public void setId(int id) {
-		this.id = id;
+
+	public void setAreaId(int areaId) {
+		this.areaId = areaId;
 	}
-	public String getName() {
-		return name;
+
+	public double getMositure() {
+		return mositure;
 	}
-	public void setName(String name) {
-		this.name = name;
+
+	public void setMositure(double mositure) {
+		this.mositure = mositure;
 	}
-	public String getLocation() {
-		return location;
+
+	public Date getTimestamp() {
+		return timestamp;
 	}
-	public void setLocation(String location) {
-		this.location = location;
+
+	public void setTimestamp(Date timestamp) {
+		this.timestamp = timestamp;
 	}
+
 }

@@ -70,28 +70,45 @@ public class ValveHandlerTest {
 		boolean shutDown = false;
 		try 
 		{
+			System.out.println("Spawning valve handler");
 			ValveHandler vh = new ValveHandler(appData, 1, shutDown, parms, areaData);
-			vh.run();
+			vh.start();
 			Thread.sleep(3000);
+			System.out.println("Set humidity to 20");
 			appData.setMoisture(1, 20, true);
 			assertFalse(appData.getValveStatus(1));
 			Thread.sleep(1500);
+			System.out.println("Set humidity to 19");
 			assertFalse(appData.getValveStatus(1));
 			appData.setMoisture(1, 19, true);
 			Thread.sleep(1500);
+			System.out.println("Set humidity to 18");
 			assertFalse(appData.getValveStatus(1));
 			appData.setMoisture(1, 18, true);
 			Thread.sleep(1500);
+			System.out.println("Set humidity to 17. Let should be lighted now");
 			assertFalse(appData.getValveStatus(1));
 			appData.setMoisture(1, 17, true);
 			Thread.sleep(1000);
 			assertTrue(appData.getValveStatus(1));
+			System.out.println("Set humidity to 20. light should stay on");
 			appData.setMoisture(1, 20, true);
-			Thread.sleep(50000);
+			Thread.sleep(10000);
+			System.out.println("10 seconds elapsed. light should stay on");
+			Thread.sleep(10000);
+			System.out.println("20 seconds elapsed. light should stay on");
+			Thread.sleep(10000);
+			System.out.println("30 seconds elapsed. light should stay on");
+			Thread.sleep(10000);
+			System.out.println("40 seconds elapsed. light should stay on");
+			Thread.sleep(10000);
+			System.out.println("50 seconds elapsed. light should stay on");
 			assertTrue(appData.getValveStatus(1));
-			Thread.sleep(11000);
+			Thread.sleep(10000);
+			System.out.println("60 seconds elapsed. light should be switched off right now");
+			Thread.sleep(2000);
 			assertFalse(appData.getValveStatus(1));
-			assertEquals(0, appData.getWateringTimeElapsed(1));
+			assertEquals((long) 0, (long) appData.getWateringTimeElapsed(1));
 		}
 		catch (RMException e) 
 		{

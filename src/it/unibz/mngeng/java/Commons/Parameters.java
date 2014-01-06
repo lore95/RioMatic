@@ -5,6 +5,7 @@ public class Parameters
 	private int NUMBER_OF_SENSORS = 8;
 	private int FIELD_ID = 1;
 	private String PERSIST_FILE_PATH = "/var/appData/RioMatic/runData.txt";
+	private int ARCHIVE_PERIOD = 30;
 	
 	public int getNumberOfSensors()
 	{
@@ -24,5 +25,10 @@ public class Parameters
 	public void setFilePath(String path)
 	{
 		PERSIST_FILE_PATH = path;
+	}
+	
+	public int getArchivePeriod()
+	{
+		return ARCHIVE_PERIOD;
 	}
 }

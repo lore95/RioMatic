@@ -24,7 +24,7 @@ public class RioMatic
 		
 		// Spawnare thread seriale
 		SerialHandler sh = new SerialHandler(appData, shutDown);
-		sh.run();
+		sh.start();
 		
 		// Spawnare thread attivazione valvole
 		
@@ -33,7 +33,7 @@ public class RioMatic
 		for(int i = 0; i < parms.getNumberOfSensors(); i++)
 		{
 			vh[i] = new ValveHandler(appData, i, shutDown, parms);
-			vh[i].run();
+			vh[i].start();
 		}
 		
 		// Spawnare thread di archiviazione
