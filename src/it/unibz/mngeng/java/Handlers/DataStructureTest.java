@@ -10,6 +10,7 @@ import java.io.RandomAccessFile;
 import it.unibz.mngeng.java.Commons.Parameters;
 import it.unibz.mngeng.java.Commons.Utility;
 
+import org.ini4j.InvalidFileFormatException;
 import org.junit.Test;
 
 public class DataStructureTest {
@@ -21,7 +22,15 @@ public class DataStructureTest {
 	
 	public DataStructureTest()
 	{
-		parms = new Parameters();
+		try 
+		{
+			parms = new Parameters(" ");
+		}
+		catch (Exception e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		parms.setFilePath("/var/appData/RioMatic/testData.txt");
 		try 
 		{

@@ -17,7 +17,7 @@ public class RioMatic
 	{
 		boolean shutDown = false;
 		// Leggere i Parametri con cui gira questa istanza dell'applicazione
-		Parameters parms = new Parameters();
+		Parameters parms = new Parameters(args[1]);
 		
 		// Creare la classe DataStructure
 		DataStructures appData = new DataStructures(parms);

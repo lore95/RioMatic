@@ -13,11 +13,12 @@ import it.unibz.mngeng.java.Exceptions.RMException;
 import it.unibz.mngeng.java.Handlers.DataStructures;
 import it.unibz.mngeng.java.Raspberry.ValveHandler;
 
+import org.ini4j.InvalidFileFormatException;
 import org.junit.Test;
 
 public class ValveHandlerTest {
 	private RandomAccessFile raf;
-	private Parameters parms = new Parameters();
+	private Parameters parms;
 	private DataStructures appData;
 	private Areas areaData;
 	
@@ -26,7 +27,15 @@ public class ValveHandlerTest {
 	
 	public ValveHandlerTest()
 	{
-		parms = new Parameters();
+		try 
+		{
+			parms = new Parameters("");
+		}
+		catch (Exception e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		parms.setFilePath("/var/appData/RioMatic/testData.txt");
 		try 
 		{
