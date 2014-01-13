@@ -14,24 +14,27 @@ public class Parameters
 	private String PERSIST_FILE_PATH;
 	private int ARCHIVE_PERIOD;
 	private int[][] SENSORS_RANGE;
-	
 	private int ADC_ADDRESS = 0x40;
+	private String DBHOST;
 	
 	public Parameters(String filePath) throws InvalidFileFormatException, IOException
 	{
 		Ini ini = new Ini(new File(filePath));
-		NUMBER_OF_SENSORS = Integer.parseInt(ini.get("Path", "NUMBER_OF_SENSORS"));
-		FIELD_ID = Integer.parseInt(ini.get("Path", "FIELD_ID"));
-		PERSIST_FILE_PATH = ini.get("Path", "PERSIST_FILE_PATH");
-		ARCHIVE_PERIOD = Integer.parseInt(ini.get("Path", "ARCHIVE_PERIOD"));
+		NUMBER_OF_SENSORS = Integer.parseInt(ini.get("sensors", "NUMBER_OF_SENSORS"));
+		FIELD_ID = Integer.parseInt(ini.get("generic", "FIELD_ID"));
+		PERSIST_FILE_PATH = ini.get("persistance", "PERSIST_FILE_PATH");
+		ARCHIVE_PERIOD = Integer.parseInt(ini.get("persistance", "ARCHIVE_PERIOD"));
 		SENSORS_RANGE = new int [NUMBER_OF_SENSORS][2];
 		for (int i = 0; i < NUMBER_OF_SENSORS; i++)
 		{
-			String range = ini.get("Path", "SENSOR_RANGE_" + i);
+			String sensorName = "SENSOR_RANGE_" + i;
+			String range = ini.get("sensors", sensorName);
 			StringTokenizer st = new StringTokenizer(range);
 			SENSORS_RANGE[i][0] = Integer.parseInt(st.nextToken());
 			SENSORS_RANGE[i][1] = Integer.parseInt(st.nextToken());
 		}
+		ADC_ADDRESS = Integer.decode(ini.get("sensors", "ADC_ADDRESS"));
+		DBHOST = ini.get("persistance", "DBHOST");
 	}
 
 	public int getNumberOfSensors()
@@ -67,5 +70,10 @@ public class Parameters
 	public int getADCAddress()
 	{
 		return ADC_ADDRESS;
+	}
+
+	public String getDBHost()
+	{
+		return DBHOST;
 	}
 }

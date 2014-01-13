@@ -50,7 +50,7 @@ public class DBConnection
  		Exception e1 = null;
 		try
 		{
-			conn = DriverManager.getConnection("jdbc:mysql://192.168.200.99/RioMatic","RioMatic","RioMatic");;
+			conn = DriverManager.getConnection("jdbc:mysql://" + System.getProperty("DBHOST") + "/RioMatic","RioMatic","RioMatic");;
 			st = conn.createStatement();
 		}
 		catch (SQLException e) 
