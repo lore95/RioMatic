@@ -1,7 +1,6 @@
 package it.unibz.mngeng.java.Raspberry;
 
 import java.io.IOException;
-import java.text.Format;
 import java.util.Random;
 
 import com.pi4j.io.i2c.I2CBus;
@@ -46,8 +45,9 @@ public class SensorDataHandler extends Thread
 		this.parms = parms;
 	}
 
-	private void readFromI2C(int sensorId)
+	protected void readFromI2C(int sensorId)
 	{
+		short unsignedValue = 0;
 		if (execAsTest)
 		{
 			buffer = 0;
@@ -64,6 +64,8 @@ public class SensorDataHandler extends Thread
 				device.write((byte) (0x40 | (sensorId & 3)));
 				device.read();
 				buffer = (byte) device.read();
+				unsignedValue = (short) ((short) 0x00FF & buffer);
+				System.out.println("Letto senosre " + sensorId + " valore " + unsignedValue);
 			}
 			catch (IOException e) 
 			{
@@ -72,9 +74,14 @@ public class SensorDataHandler extends Thread
 			}
 		}
 		
-		double multiplier = 100 / (parms.getSensorRange(sensorId)[1] - parms.getSensorRange(sensorId)[0]);
-		moistureValue = 100 - buffer * multiplier;
+		System.out.println("Max " + parms.getSensorRange(sensorId)[1] + " Min " + parms.getSensorRange(sensorId)[0]);
+		moistureValue = 100 * (unsignedValue - parms.getSensorRange(sensorId)[0]) / (parms.getSensorRange(sensorId)[1] - parms.getSensorRange(sensorId)[0]);
 		return;
+	}
+	
+	protected double getMoisture()
+	{
+		return moistureValue;
 	}
 	
 	@Override
@@ -91,6 +98,10 @@ public class SensorDataHandler extends Thread
 					try
 					{
 						appData.setMoisture(i, moistureValue, true);
+						if (moistureValue < 50)
+						{
+							appData.setValveStatus(i, true);
+						}
 					}
 					catch (IOException e) 
 					{

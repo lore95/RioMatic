@@ -11,6 +11,7 @@ import com.pi4j.io.gpio.PinMode;
 import com.pi4j.io.gpio.PinPullResistance;
 import com.pi4j.io.gpio.PinState;
 import com.pi4j.io.gpio.RaspiGpioProvider;
+import com.pi4j.io.gpio.RaspiPin;
 import com.pi4j.io.gpio.impl.PinImpl;
 
 import it.unibz.mngeng.java.Commons.Parameters;
@@ -43,11 +44,20 @@ public class ValveHandler extends Thread
 									 "FROM Areas " +
 									 "WHERE fieldId = " + this.parms.getFieldId() + " AND " + 
 									 "      sensorId = " + instance, areaData);
-		pinName = "Area_" + this.parms.getFieldId() + "." + instance;
-		Pin pinDescr = new PinImpl(RaspiGpioProvider.NAME, instance, pinName, 
-				                   EnumSet.of(PinMode.DIGITAL_INPUT, PinMode.DIGITAL_OUTPUT),
-				                   PinPullResistance.all()); 
-		pin = gpio.provisionDigitalOutputPin(pinDescr, pinName, PinState.LOW);
+		pinName = "Area_" + this.parms.getFieldId() + "." + areaData.getSensorId();
+		Pin pinToUse;
+		if (instance == 0)
+		{
+			pinToUse = RaspiPin.GPIO_04;
+		}
+		else
+		{
+			pinToUse = RaspiPin.GPIO_05;
+		}
+//		Pin pinDescr = new PinImpl(RaspiGpioProvider.NAME, areaData.getSensorId(), pinName, 
+//				                   EnumSet.of(PinMode.DIGITAL_INPUT, PinMode.DIGITAL_OUTPUT),
+//				                   PinPullResistance.all()); 
+		pin = gpio.provisionDigitalOutputPin(pinToUse, pinName, PinState.HIGH);
 	}
 
 	public ValveHandler(DataStructures appData, int instance, boolean shutDown, Parameters parms, Areas areaData) throws RMException
@@ -88,7 +98,7 @@ public class ValveHandler extends Thread
 
 			if (appData.getValveStatus(instance))
 			{
-				pin.high();
+				pin.low();
 				secondsElapsed++;
 				if (secondsElapsed % 60 == 0)
 				{
@@ -101,7 +111,7 @@ public class ValveHandler extends Thread
 							appData.setWateringTimeElapsed(instance, 0, true);
 							appData.setValveStatus(instance, false);
 							secondsElapsed = 0;
-							pin.low();
+							pin.high();
 						}
 					}
 					catch (IOException e) 
@@ -113,7 +123,7 @@ public class ValveHandler extends Thread
 			}
 			else
 			{
-				pin.low();
+				pin.high();
 			}
 			
 			try 

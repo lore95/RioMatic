@@ -4,6 +4,7 @@ import java.util.Properties;
 import it.unibz.mngeng.java.Commons.Parameters;
 import it.unibz.mngeng.java.Exceptions.RMException;
 import it.unibz.mngeng.java.Handlers.DataStructures;
+import it.unibz.mngeng.java.Raspberry.PumpHandler;
 import it.unibz.mngeng.java.Raspberry.SensorDataHandler;
 import it.unibz.mngeng.java.Raspberry.ValveHandler;
 
@@ -30,8 +31,6 @@ public class RioMatic
 		sh.start();
 		
 		// Spawnare thread attivazione valvole
-		
-		// Spawnare threads di irrigazione
 		ValveHandler[] vh = new ValveHandler[parms.getNumberOfSensors()];
 		for(int i = 0; i < parms.getNumberOfSensors(); i++)
 		{
@@ -39,6 +38,8 @@ public class RioMatic
 			vh[i].start();
 		}
 		
+		PumpHandler ph = new PumpHandler(appData, shutDown, parms);
+		sh.start();
 		// Spawnare thread di archiviazione
 		
 		while(true)
