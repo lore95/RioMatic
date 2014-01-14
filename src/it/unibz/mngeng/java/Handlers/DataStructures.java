@@ -15,6 +15,7 @@ public class DataStructures
 	static public final String DATA_ITEM_FORMAT = "%0" + ITEM_LEN + ".2f";
 	static public int RECORD_LEN = 0;
 
+	private long errorCode = 0;
 	private double[] moisture;
 	private boolean[] valveStatus;
 	private int[] wateringTimeElapsed;
@@ -154,4 +155,15 @@ public class DataStructures
 	{
 		this.valveStatus[pos] = valveStatus;
 	}
+
+	public long getErrorCode() 
+	{
+		return errorCode;
+	}
+
+	public synchronized void setErrorCode(long errorCode) 
+	{
+		this.errorCode = errorCode;
+	}
+	
 }

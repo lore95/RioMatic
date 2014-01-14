@@ -7,6 +7,7 @@ import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CDevice;
 import com.pi4j.io.i2c.I2CFactory;
 
+import it.unibz.mngeng.java.Commons.Errors;
 import it.unibz.mngeng.java.Commons.Parameters;
 import it.unibz.mngeng.java.Handlers.DataStructures;
 
@@ -26,7 +27,6 @@ public class SensorDataHandler extends Thread
 	
 	public SensorDataHandler(DataStructures appData, Parameters parms, boolean shutDown) throws IOException
 	{
-		rn = new Random();		
 		this.appData = appData;
 		this.shutDown = shutDown;
 		this.parms = parms;
@@ -65,17 +65,15 @@ public class SensorDataHandler extends Thread
 				device.read();
 				buffer = (byte) device.read();
 				unsignedValue = (short) ((short) 0x00FF & buffer);
-				System.out.println("Letto senosre " + sensorId + " valore " + unsignedValue);
 			}
 			catch (IOException e) 
 			{
-				// TODO error handling
+				appData.setErrorCode(appData.getErrorCode() | Errors.READ_SENSOR_ERROR);
 				return;
 			}
 		}
-		
-		System.out.println("Max " + parms.getSensorRange(sensorId)[1] + " Min " + parms.getSensorRange(sensorId)[0]);
-		moistureValue = 100 * (unsignedValue - parms.getSensorRange(sensorId)[0]) / (parms.getSensorRange(sensorId)[1] - parms.getSensorRange(sensorId)[0]);
+		moistureValue = 100 * (unsignedValue - parms.getSensorRange(sensorId)[0]) / 
+							  (parms.getSensorRange(sensorId)[1] - parms.getSensorRange(sensorId)[0]);
 		return;
 	}
 	
@@ -98,15 +96,12 @@ public class SensorDataHandler extends Thread
 					try
 					{
 						appData.setMoisture(i, moistureValue, true);
-						if (moistureValue < 50)
-						{
-							appData.setValveStatus(i, true);
-						}
 					}
 					catch (IOException e) 
 					{
+						appData.setErrorCode(appData.getErrorCode() | Errors.DATA_FILE_WRITE_ERROR);
 						System.out.println("Exception in setMoisture: " + e.getMessage());
-						// TODO handle error
+						System.exit(-1);
 					}
 				}
 				Thread.sleep(1000);
@@ -114,8 +109,7 @@ public class SensorDataHandler extends Thread
 		}
 		catch (InterruptedException e) 
 		{
-			System.out.println("Exception in SerialHandler: " + e.getMessage());
-			System.exit(1);
+			;
 		}
 		System.exit(0);
 	}

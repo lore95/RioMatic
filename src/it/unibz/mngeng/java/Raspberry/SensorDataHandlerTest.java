@@ -1,7 +1,5 @@
 package it.unibz.mngeng.java.Raspberry;
 
-import static org.junit.Assert.*;
-
 import java.io.IOException;
 
 import it.unibz.mngeng.java.Commons.Parameters;

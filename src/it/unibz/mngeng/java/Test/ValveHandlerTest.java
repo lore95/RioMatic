@@ -13,7 +13,6 @@ import it.unibz.mngeng.java.Exceptions.RMException;
 import it.unibz.mngeng.java.Handlers.DataStructures;
 import it.unibz.mngeng.java.Raspberry.ValveHandler;
 
-import org.ini4j.InvalidFileFormatException;
 import org.junit.Test;
 
 public class ValveHandlerTest {
@@ -118,10 +117,6 @@ public class ValveHandlerTest {
 			Thread.sleep(2000);
 			assertFalse(appData.getValveStatus(1));
 			assertEquals((long) 0, (long) appData.getWateringTimeElapsed(1));
-		}
-		catch (RMException e) 
-		{
-			fail("RMException");
 		}
 		catch (InterruptedException e) 
 		{

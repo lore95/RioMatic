@@ -11,9 +11,9 @@ import com.pi4j.io.gpio.PinMode;
 import com.pi4j.io.gpio.PinPullResistance;
 import com.pi4j.io.gpio.PinState;
 import com.pi4j.io.gpio.RaspiGpioProvider;
-import com.pi4j.io.gpio.RaspiPin;
 import com.pi4j.io.gpio.impl.PinImpl;
 
+import it.unibz.mngeng.java.Commons.Errors;
 import it.unibz.mngeng.java.Commons.Parameters;
 import it.unibz.mngeng.java.DBUtility.Areas;
 import it.unibz.mngeng.java.Exceptions.RMException;
@@ -23,14 +23,15 @@ public class ValveHandler extends Thread
 {
 	final GpioController gpio = GpioFactory.getInstance();
 	private GpioPinDigitalOutput pin;
+	private Pin pinDescr;
 
 	private DataStructures appData;
 	private Parameters parms;
 	private boolean shutDown;
-	private int instance;
 	private Areas areaData;
 	private String pinName;
 	private int secondsElapsed= 0;
+	private int instance;
 
 	public ValveHandler(DataStructures appData, int instance, boolean shutDown, Parameters parms) throws RMException
 	{
@@ -39,28 +40,23 @@ public class ValveHandler extends Thread
 		this.instance = instance;
 		this.parms = parms;
 		
-		this.areaData = new Areas();
-		this.areaData.populateObject("SELECT * " +
-									 "FROM Areas " +
-									 "WHERE fieldId = " + this.parms.getFieldId() + " AND " + 
-									 "      sensorId = " + instance, areaData);
-		pinName = "Area_" + this.parms.getFieldId() + "." + areaData.getSensorId();
-		Pin pinToUse;
-		if (instance == 0)
+		try 
 		{
-			pinToUse = RaspiPin.GPIO_04;
+			this.areaData = new Areas(parms.getSensorId(instance));
 		}
-		else
+		catch (RMException e) 
 		{
-			pinToUse = RaspiPin.GPIO_05;
+			appData.setErrorCode(appData.getErrorCode() | Errors.DB_CONNECTION_ERROR);
+			throw(e);
 		}
-//		Pin pinDescr = new PinImpl(RaspiGpioProvider.NAME, areaData.getSensorId(), pinName, 
-//				                   EnumSet.of(PinMode.DIGITAL_INPUT, PinMode.DIGITAL_OUTPUT),
-//				                   PinPullResistance.all()); 
-		pin = gpio.provisionDigitalOutputPin(pinToUse, pinName, PinState.HIGH);
+		pinName = "Area_" + this.parms.getFieldId() + "." + areaData.getGPIOId();
+		pinDescr = new PinImpl(RaspiGpioProvider.NAME, areaData.getGPIOId(), pinName, 
+				                   EnumSet.of(PinMode.DIGITAL_OUTPUT),
+				                   PinPullResistance.all()); 
+		pin = gpio.provisionDigitalOutputPin(pinDescr, pinName, PinState.HIGH);
 	}
 
-	public ValveHandler(DataStructures appData, int instance, boolean shutDown, Parameters parms, Areas areaData) throws RMException
+	public ValveHandler(DataStructures appData, int instance, boolean shutDown, Parameters parms, Areas areaData) 
 	{
 		this.appData = appData;
 		this.shutDown = shutDown;
@@ -68,11 +64,12 @@ public class ValveHandler extends Thread
 		this.parms = parms;
 		
 		this.areaData = areaData;
-		pinName = "Area_" + this.parms.getFieldId() + "." + instance;
-		Pin pinDescr = new PinImpl(RaspiGpioProvider.NAME, 1, pinName, 
-                EnumSet.of(PinMode.DIGITAL_INPUT, PinMode.DIGITAL_OUTPUT),
-                PinPullResistance.all()); 
-		pin = gpio.provisionDigitalOutputPin(pinDescr, pinName, PinState.LOW);
+		
+		pinName = "Area_" + this.parms.getFieldId() + "." + areaData.getGPIOId();
+		pinDescr = new PinImpl(RaspiGpioProvider.NAME, areaData.getGPIOId(), pinName, 
+				                   EnumSet.of(PinMode.DIGITAL_OUTPUT),
+				                   PinPullResistance.all()); 
+		pin = gpio.provisionDigitalOutputPin(pinDescr, pinName, PinState.HIGH);
 	}
 
 	@Override
@@ -91,6 +88,7 @@ public class ValveHandler extends Thread
 				}
 				catch (IOException e) 
 				{
+					appData.setErrorCode(appData.getErrorCode() | Errors.DATA_FILE_WRITE_ERROR);
 					System.out.println("ValveHandler instance " + instance + ": got IOException " + e.getMessage());
 					System.exit(-1);
 				}
@@ -111,11 +109,11 @@ public class ValveHandler extends Thread
 							appData.setWateringTimeElapsed(instance, 0, true);
 							appData.setValveStatus(instance, false);
 							secondsElapsed = 0;
-							pin.high();
 						}
 					}
 					catch (IOException e) 
 					{
+						appData.setErrorCode(appData.getErrorCode() | Errors.DATA_FILE_WRITE_ERROR);
 						System.out.println("ValveHandler instance " + instance + ": got IOException " + e.getMessage());
 						System.exit(-1);
 					}

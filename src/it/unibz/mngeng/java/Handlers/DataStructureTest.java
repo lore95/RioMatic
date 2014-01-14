@@ -10,7 +10,6 @@ import java.io.RandomAccessFile;
 import it.unibz.mngeng.java.Commons.Parameters;
 import it.unibz.mngeng.java.Commons.Utility;
 
-import org.ini4j.InvalidFileFormatException;
 import org.junit.Test;
 
 public class DataStructureTest {

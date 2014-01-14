@@ -10,7 +10,7 @@ public class Areas extends DBInterface
 	protected int fieldId;
 	protected double moistureMin;
 	protected int wateringTime;
-	protected int sensorId;
+	protected int gpioId;
 
 	public Areas() throws RMException
 	{
@@ -50,10 +50,10 @@ public class Areas extends DBInterface
 	public void setWateringTime(int wateringTime) {
 		this.wateringTime = wateringTime;
 	}
-	public int getSensorId() {
-		return sensorId;
+	public int getGPIOId() {
+		return gpioId;
 	}
-	public void setSensorId(int sensorId) {
-		this.sensorId = sensorId;
+	public void setGPIOId(int gpioId) {
+		this.gpioId = gpioId;
 	}
 }
