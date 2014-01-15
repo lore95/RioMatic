@@ -3,6 +3,8 @@ package it.unibz.mngeng.java.Raspberry;
 import java.io.IOException;
 import java.util.Random;
 
+import org.apache.log4j.Logger;
+
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CDevice;
 import com.pi4j.io.i2c.I2CFactory;
@@ -25,14 +27,17 @@ public class SensorDataHandler extends Thread
 	private I2CDevice device;
 	private Parameters parms;
 	
+	static Logger logger = Logger.getLogger(SensorDataHandler.class);
+	
 	public SensorDataHandler(DataStructures appData, Parameters parms, boolean shutDown) throws IOException
 	{
 		this.appData = appData;
 		this.shutDown = shutDown;
 		this.parms = parms;
-        // create I2C communications bus instance
+		logger.debug("create I2C communications bus instance");
 		bus = I2CFactory.getInstance(I2CBus.BUS_1);
-        // create I2C device instance
+		
+		logger.debug("create I2C device instance");
         device = bus.getDevice(parms.getADCAddress());
 	}
 
@@ -45,7 +50,7 @@ public class SensorDataHandler extends Thread
 		this.parms = parms;
 	}
 
-	protected void readFromI2C(int sensorId)
+	protected boolean readFromI2C(int sensorId)
 	{
 		short unsignedValue = 0;
 		if (execAsTest)
@@ -69,12 +74,13 @@ public class SensorDataHandler extends Thread
 			catch (IOException e) 
 			{
 				appData.setErrorCode(appData.getErrorCode() | Errors.READ_SENSOR_ERROR);
-				return;
+				logger.error("IOEXception reading sensor " + sensorId);
+				return false;
 			}
 		}
 		moistureValue = 100 * (unsignedValue - parms.getSensorRange(sensorId)[0]) / 
 							  (parms.getSensorRange(sensorId)[1] - parms.getSensorRange(sensorId)[0]);
-		return;
+		return true;
 	}
 	
 	protected double getMoisture()
@@ -85,23 +91,26 @@ public class SensorDataHandler extends Thread
 	@Override
 	public void run() 
 	{
+		logger.debug("Sensor Handler thread started");
 		try 
 		{
 			while(!shutDown)
 			{
 				for(int i = 0; i < parms.getNumberOfSensors(); i++)
 				{
-					readFromI2C(i);
-					System.out.println("Sensor " + i + " - moistureLevel " + String.format("%4.2f", moistureValue));
-					try
+					if (readFromI2C(i))
 					{
-						appData.setMoisture(i, moistureValue, true);
-					}
-					catch (IOException e) 
-					{
-						appData.setErrorCode(appData.getErrorCode() | Errors.DATA_FILE_WRITE_ERROR);
-						System.out.println("Exception in setMoisture: " + e.getMessage());
-						System.exit(-1);
+						logger.trace("Sensor " + i + " - moistureLevel " + String.format("%4.2f", moistureValue));
+						try
+						{
+							appData.setMoisture(i, moistureValue, true);
+						}
+						catch (IOException e) 
+						{
+							appData.setErrorCode(appData.getErrorCode() | Errors.DATA_FILE_WRITE_ERROR);
+							logger.fatal("Exception in setMoisture: " + e.getMessage());
+							System.exit(-1);
+						}
 					}
 				}
 				Thread.sleep(1000);

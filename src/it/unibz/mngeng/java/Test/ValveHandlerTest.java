@@ -79,7 +79,7 @@ public class ValveHandlerTest {
 		try 
 		{
 			System.out.println("Spawning valve handler");
-			ValveHandler vh = new ValveHandler(appData, 1, shutDown, parms, areaData);
+			ValveHandler vh = new ValveHandler(appData, 1, parms, areaData, shutDown);
 			vh.start();
 			Thread.sleep(3000);
 			System.out.println("Set humidity to 20");

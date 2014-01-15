@@ -3,6 +3,8 @@ package it.unibz.mngeng.java.Raspberry;
 import java.io.IOException;
 import java.util.EnumSet;
 
+import org.apache.log4j.Logger;
+
 import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioFactory;
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
@@ -33,22 +35,26 @@ public class ValveHandler extends Thread
 	private int secondsElapsed= 0;
 	private int instance;
 
-	public ValveHandler(DataStructures appData, int instance, boolean shutDown, Parameters parms) throws RMException
+	static Logger logger = Logger.getLogger(ValveHandler.class);
+	
+	public ValveHandler(DataStructures appData, int instance, Parameters parms, boolean shutDown) throws RMException
 	{
 		this.appData = appData;
 		this.shutDown = shutDown;
 		this.instance = instance;
 		this.parms = parms;
 		
+		logger.debug("Getting area data for Aread id " + parms.getSensorId(instance));
 		try 
 		{
-			this.areaData = new Areas(parms.getSensorId(instance));
+			this.areaData = new Areas(parms.getSensorId(parms.getSensorId(instance)));
 		}
 		catch (RMException e) 
 		{
 			appData.setErrorCode(appData.getErrorCode() | Errors.DB_CONNECTION_ERROR);
 			throw(e);
 		}
+		logger.debug("Creating pin " + areaData.getGPIOId());
 		pinName = "Area_" + this.parms.getFieldId() + "." + areaData.getGPIOId();
 		pinDescr = new PinImpl(RaspiGpioProvider.NAME, areaData.getGPIOId(), pinName, 
 				                   EnumSet.of(PinMode.DIGITAL_OUTPUT),
@@ -56,7 +62,7 @@ public class ValveHandler extends Thread
 		pin = gpio.provisionDigitalOutputPin(pinDescr, pinName, PinState.HIGH);
 	}
 
-	public ValveHandler(DataStructures appData, int instance, boolean shutDown, Parameters parms, Areas areaData) 
+	public ValveHandler(DataStructures appData, int instance, Parameters parms, Areas areaData, boolean shutDown) 
 	{
 		this.appData = appData;
 		this.shutDown = shutDown;
@@ -75,38 +81,47 @@ public class ValveHandler extends Thread
 	@Override
 	public void run() 
 	{
+		logger.debug("Valve Handler " + instance + " started");
 		while(!shutDown)
 		{
 			if ((appData.getMoisture(instance) < areaData.getMoistureMin()) &&
 				!appData.getValveStatus(instance))
 			{
+				logger.debug("Moisture for area " + instance + " = " + appData.getMoisture(instance) + 
+							 " lower than required value (" + areaData.getMoistureMin() + ")");
 				try
 				{
+					logger.debug("Resetting watering time to 0"); 
 					appData.setWateringTimeElapsed(0, instance, true);
+					logger.debug("Set valve status to true in order to open it"); 
 					appData.setValveStatus(instance, true);
+					logger.debug("Set time elapsed to 0"); 
 					secondsElapsed = 0;
 				}
 				catch (IOException e) 
 				{
 					appData.setErrorCode(appData.getErrorCode() | Errors.DATA_FILE_WRITE_ERROR);
-					System.out.println("ValveHandler instance " + instance + ": got IOException " + e.getMessage());
+					logger.fatal("ValveHandler instance " + instance + ": got IOException " + e.getMessage());
 					System.exit(-1);
 				}
 			}
 
 			if (appData.getValveStatus(instance))
 			{
+				logger.debug("Valve " + pin.getName() + " required to open"); 
 				pin.low();
 				secondsElapsed++;
-				if (secondsElapsed % 60 == 0)
+				if (secondsElapsed % 10 == 0)
 				{
+					logger.debug("logging watering time on persistence data file");
 					try
 					{
-						int i = appData.getWateringTimeElapsed(instance);
-						appData.setWateringTimeElapsed(++i, instance, true);
-						if (i >= areaData.getWateringTime())
+						appData.setWateringTimeElapsed(instance, secondsElapsed, true);
+						if (secondsElapsed >= areaData.getWateringTime())
 						{
+							logger.debug("Watering time is over. Reset data on persistence file");
 							appData.setWateringTimeElapsed(instance, 0, true);
+							logger.debug("Set the valve status to off to close it");
 							appData.setValveStatus(instance, false);
 							secondsElapsed = 0;
 						}
@@ -114,7 +129,7 @@ public class ValveHandler extends Thread
 					catch (IOException e) 
 					{
 						appData.setErrorCode(appData.getErrorCode() | Errors.DATA_FILE_WRITE_ERROR);
-						System.out.println("ValveHandler instance " + instance + ": got IOException " + e.getMessage());
+						logger.fatal("ValveHandler instance " + instance + ": got IOException " + e.getMessage());
 						System.exit(-1);
 					}
 				}
