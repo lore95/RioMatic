@@ -20,14 +20,13 @@ import com.pi4j.io.gpio.impl.PinImpl;
 
 public class ErrorsHandler extends Thread
 {
-	static private final int BLINK_LENGTH = 500; 
-	static private final int BLINK_PAUSE = 2000; 
 	private GpioController gpio;
 	private GpioPinDigitalOutput pinLed1;
 	private GpioPinDigitalOutput pinLed2;
 	private GpioPinDigitalOutput pinLed3;
 	private Pin pinDescr;
 
+	private Parameters parms;
 	private DataStructures appData;
 	private boolean shutDown;
 	private String pinName;
@@ -37,6 +36,7 @@ public class ErrorsHandler extends Thread
 	public ErrorsHandler(DataStructures appData, Parameters parms, boolean shutDown) throws IOException
 	{
 		gpio = GpioFactory.getInstance();
+		this.parms = parms;
 		this.appData = appData;
 		this.shutDown = shutDown;
 		
@@ -76,7 +76,7 @@ public class ErrorsHandler extends Thread
 					countFlash[1] = (byte) ((appData.getErrorCode() & 0x0000FF00) * 2);
 					logger.debug("Error 2 set to " + (appData.getErrorCode() & 0x0000FF00));
 					pinLed1.low();
-					countOff[0] = BLINK_PAUSE / BLINK_LENGTH - 1;
+					countOff[0] = (byte) (parms.getBlinkPause() / parms.getBlinkLength() - 1);
 				}
 				else
 				{
@@ -105,7 +105,7 @@ public class ErrorsHandler extends Thread
 					countFlash[1] = (byte) (((appData.getErrorCode() & 0x0000FF00) >> 8) * 2);
 					logger.debug("Error 2 set to " + ((appData.getErrorCode() & 0x0000FF00) >> 8));
 					pinLed2.low();
-					countOff[1] = BLINK_PAUSE / BLINK_LENGTH - 1;
+					countOff[1] = (byte) (parms.getBlinkPause() / parms.getBlinkLength() - 1);
 				}
 				else
 				{
@@ -134,7 +134,7 @@ public class ErrorsHandler extends Thread
 					countFlash[2] = (byte) (((appData.getErrorCode() & 0x00FF0000) >> 8) * 2);
 					logger.debug("Error 3 set to " + ((appData.getErrorCode() & 0x00FF0000) >> 16));
 					pinLed3.low();
-					countOff[1] = BLINK_PAUSE / BLINK_LENGTH - 1;
+					countOff[2] = (byte) (parms.getBlinkPause() / parms.getBlinkLength() - 1);
 				}
 				else
 				{
@@ -158,7 +158,7 @@ public class ErrorsHandler extends Thread
 
 			try 
 			{
-				Thread.sleep(BLINK_LENGTH);
+				Thread.sleep(parms.getBlinkLength());
 			} 
 			catch (InterruptedException e) 
 			{

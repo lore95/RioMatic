@@ -20,6 +20,8 @@ public class Parameters
 	private int ADC_ADDRESS = 0x40;
 	private int PUMP_GPIO;
 	private String DBHOST;
+	private int BLINK_LENGTH = 500; 
+	private int BLINK_PAUSE = 2000; 
 	
 	public Parameters(String filePath) throws InvalidFileFormatException, IOException
 	{
@@ -33,7 +35,9 @@ public class Parameters
 		ADC_ADDRESS = Integer.decode(ini.get("sensors", "ADC_ADDRESS"));
 		ADC_BUS = Integer.decode(ini.get("sensors", "ADC_BUS"));
 		DBHOST = ini.get("persistance", "DBHOST");
-		PUMP_GPIO = Integer.decode(ini.get("sensors", "PUMP_GPIO"));
+		PUMP_GPIO = Integer.parseInt(ini.get("sensors", "PUMP_GPIO"));
+		BLINK_LENGTH = Integer.parseInt(ini.get("generic", "BLINK_LENGTH"));
+		BLINK_PAUSE = Integer.parseInt(ini.get("generic", "BLINK_PAUSE"));
 		for (int i = 0; i < NUMBER_OF_SENSORS; i++)
 		{
 			String entryName = "SENSOR_RANGE_" + i;
@@ -109,5 +113,15 @@ public class Parameters
 	public int getADCBus()
 	{
 		return ADC_BUS;
+	}
+	
+	public int getBlinkLength()
+	{
+		return BLINK_LENGTH;
+	}
+	
+	public int getBlinkPause()
+	{
+		return BLINK_PAUSE;
 	}
 }
