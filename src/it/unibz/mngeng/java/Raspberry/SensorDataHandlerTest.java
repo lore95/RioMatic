@@ -26,7 +26,7 @@ public class SensorDataHandlerTest {
 			System.out.println("Moisture sensor 2: " + sh.getMoisture());
 			try 
 			{
-				Thread.sleep(10000);
+				Thread.sleep(1000);
 			}
 			catch (InterruptedException e) 
 			{

@@ -37,7 +37,7 @@ public class SensorDataHandler extends Thread
 		logger.debug("create I2C communications bus instance");
 		bus = I2CFactory.getInstance(I2CBus.BUS_1);
 		
-		logger.debug("create I2C device instance");
+		logger.debug("create I2C device instance at address " + parms.getADCAddress());
         device = bus.getDevice(parms.getADCAddress());
 	}
 
@@ -74,7 +74,7 @@ public class SensorDataHandler extends Thread
 			catch (IOException e) 
 			{
 				appData.setErrorCode(appData.getErrorCode() | Errors.READ_SENSOR_ERROR);
-				logger.error("IOEXception reading sensor " + sensorId);
+				logger.error("IOEXception " + e.getMessage() + " reading sensor " + sensorId);
 				return false;
 			}
 		}
