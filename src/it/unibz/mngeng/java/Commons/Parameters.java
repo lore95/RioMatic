@@ -16,6 +16,7 @@ public class Parameters
 	private int[] SENSORS_ID;
 	private int[] LED_ERROR_GPIO = new int[3];
 	private int[][] SENSORS_RANGE;
+	private int ADC_BUS = 0x1;
 	private int ADC_ADDRESS = 0x40;
 	private int PUMP_GPIO;
 	private String DBHOST;
@@ -30,6 +31,7 @@ public class Parameters
 		SENSORS_RANGE = new int [NUMBER_OF_SENSORS][2];
 		SENSORS_ID = new int [NUMBER_OF_SENSORS];
 		ADC_ADDRESS = Integer.decode(ini.get("sensors", "ADC_ADDRESS"));
+		ADC_BUS = Integer.decode(ini.get("sensors", "ADC_BUS"));
 		DBHOST = ini.get("persistance", "DBHOST");
 		PUMP_GPIO = Integer.decode(ini.get("sensors", "PUMP_GPIO"));
 		for (int i = 0; i < NUMBER_OF_SENSORS; i++)
@@ -102,5 +104,10 @@ public class Parameters
 	public int getLedGPIOPin(int instance)
 	{
 		return LED_ERROR_GPIO[instance];
+	}
+	
+	public int getADCBus()
+	{
+		return ADC_BUS;
 	}
 }

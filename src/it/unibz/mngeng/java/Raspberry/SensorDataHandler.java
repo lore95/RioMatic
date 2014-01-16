@@ -34,8 +34,8 @@ public class SensorDataHandler extends Thread
 		this.appData = appData;
 		this.shutDown = shutDown;
 		this.parms = parms;
-		logger.debug("create I2C communications bus instance");
-		bus = I2CFactory.getInstance(I2CBus.BUS_1);
+		logger.debug("create I2C communications bus instance on bus " + parms.getADCBus());
+		bus = I2CFactory.getInstance(parms.getADCBus());
 		
 		logger.debug("create I2C device instance at address " + parms.getADCAddress());
         device = bus.getDevice(parms.getADCAddress());
