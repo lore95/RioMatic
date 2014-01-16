@@ -14,7 +14,7 @@ public class SensorDataHandlerTest {
 	public void readDataFromSensorsWhenReallyConnectedToRPI() throws InvalidFileFormatException, IOException 
 	{
 		boolean shutdown = false;
-		Parameters parms = new Parameters("Data/RioMatic.ini");
+		Parameters parms = new Parameters("conf/RioMatic.ini");
 		DataStructures appData = new DataStructures(parms);
 		SensorDataHandler sh = new SensorDataHandler(appData, parms, shutdown);
 		int count = 0;

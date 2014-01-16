@@ -64,8 +64,8 @@ public class RioMatic
 		ErrorsHandler eh = null;
 		try 
 		{
-			eh = new ErrorsHandler(appData, parms, shutDown);
 			logger.debug("Starting Error Handler thread");
+			eh = new ErrorsHandler(appData, parms, shutDown);
 			eh.start();
 		}
 		catch(IOException e)
@@ -73,12 +73,21 @@ public class RioMatic
 			logger.error("Exception " + e.getMessage() + " creating ErrorHandler thread");
 		}
 		
+		try 
+		{
+			Thread.sleep(500);
+		}
+		catch (InterruptedException e) 
+		{
+			;
+		}		
+		
 		// ADC Handler spawn
 		SensorDataHandler sh = null;
 		try 
 		{
-			sh = new SensorDataHandler(appData, parms, shutDown);
 			logger.debug("Starting Sensor Handler thread");
+			sh = new SensorDataHandler(appData, parms, shutDown);
 			sh.start();
 		}
 		catch (IOException e)
@@ -86,33 +95,68 @@ public class RioMatic
 			logger.error("Exception " + e.getMessage() + " creating SensorHandler thread");
 		}
 		
+		try 
+		{
+			Thread.sleep(500);
+		}
+		catch (InterruptedException e) 
+		{
+			;
+		}		
+		
 		// Valve handler spawn
 		ValveHandler[] vh = new ValveHandler[parms.getNumberOfSensors()];
 		for(int i = 0; i < parms.getNumberOfSensors(); i++)
 		{
 			try 
 			{
-				vh[i] = new ValveHandler(appData, i, parms, shutDown);
 				logger.debug("Starting Valve " + i + " Handler thread");
+				vh[i] = new ValveHandler(appData, i, parms, shutDown);
 				vh[i].start();
-			}
+				try 
+				{
+					Thread.sleep(250);
+				}
+				catch (InterruptedException e) 
+				{
+					;
+				}		
+	}
 			catch (RMException e) 
 			{
 				logger.error("Exception " + e.getMessage() + " creating Valve Handler " + i + " thread");
 			}
 		}
 		
+		try 
+		{
+			Thread.sleep(500);
+		}
+		catch (InterruptedException e) 
+		{
+			;
+		}		
+
 		// Valve handler spawn
-		PumpHandler ph = new PumpHandler(appData, parms, shutDown);
 		logger.debug("Starting Pump Handler thread");
+		PumpHandler ph = new PumpHandler(appData, parms, shutDown);
 		ph.start();
 		
+		try 
+		{
+			Thread.sleep(500);
+		}
+		catch (InterruptedException e) 
+		{
+			;
+		}		
+
 		// Data archive spawn
 		ArchiveData ad = null;
 		try 
 		{
-			ad = new ArchiveData(appData, parms, shutDown);
 			logger.debug("Starting Archive Data thread");
+			ad = new ArchiveData(appData, parms, shutDown);
 			ad.start();
 		}
 		catch (RMException e) 

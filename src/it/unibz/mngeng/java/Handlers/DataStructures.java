@@ -4,6 +4,12 @@ import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
+import org.apache.log4j.Logger;
+
+import com.pi4j.io.i2c.I2CBus;
+import com.pi4j.io.i2c.I2CDevice;
+import com.pi4j.io.i2c.I2CFactory;
+
 import it.unibz.mngeng.java.Commons.Parameters;
 import it.unibz.mngeng.java.Commons.Utility;
 
@@ -21,10 +27,21 @@ public class DataStructures
 	private int[] wateringTimeElapsed;
 	private Parameters parms;
 	private RandomAccessFile persistedData;
+
+	private I2CBus bus;
+	private I2CDevice device;
+	
+	static Logger logger = Logger.getLogger(DataStructures.class);
 	
 	public DataStructures(Parameters parms) throws IOException
 	{
 		this.parms = parms;
+		logger.debug("create I2C communications bus instance on bus " + parms.getADCBus());
+		bus = I2CFactory.getInstance(parms.getADCBus());
+		
+		logger.debug("create I2C device instance at address " + parms.getADCAddress());
+        device = bus.getDevice(parms.getADCAddress());
+
 		RECORD_LEN = ITEM_LEN * parms.getNumberOfSensors() + 1;
 		
 		persistedData = new RandomAccessFile(new File(parms.getPersistFilePath()), "rwd");
@@ -164,6 +181,10 @@ public class DataStructures
 	public synchronized void setErrorCode(long errorCode) 
 	{
 		this.errorCode = errorCode;
+	}
+
+	public I2CDevice getDevice() {
+		return device;
 	}
 	
 }

@@ -20,6 +20,8 @@ import com.pi4j.io.gpio.impl.PinImpl;
 
 public class ErrorsHandler extends Thread
 {
+	static private final int BLINK_LENGTH = 500; 
+	static private final int BLINK_PAUSE = 2000; 
 	private GpioController gpio;
 	private GpioPinDigitalOutput pinLed1;
 	private GpioPinDigitalOutput pinLed2;
@@ -63,27 +65,18 @@ public class ErrorsHandler extends Thread
 	public void run() 
 	{
 		logger.debug("Errors Handler thread started");
-		byte[] countFlash = {-1, -1, -1};
-		byte[] countOff = {-1, -1, -1};
+		byte[] countFlash = {0, 0, 0};
+		byte[] countOff = {0, 0, 0};
 		while(!shutDown)
 		{
-			if (appData.getErrorCode() == 0)
-			{
-				pinLed1.low();
-				pinLed2.low();
-				pinLed3.low();
-				countFlash[0] = -1;
-				countFlash[1] = -1;
-				countFlash[2] = -1;
-			}
-			else
+			if ((appData.getErrorCode() & 0xFF) != 0)
 			{
 				if (countFlash[0] <= 0)
 				{
-					countFlash[0] = (byte) (appData.getErrorCode() & 0x000000FF);
-					countOff[0] = 4;
+					countFlash[1] = (byte) ((appData.getErrorCode() & 0x0000FF00) * 2);
+					logger.debug("Error 2 set to " + (appData.getErrorCode() & 0x0000FF00));
 					pinLed1.low();
-					logger.debug("Error 1 set to " + (appData.getErrorCode() & 0x000000FF));
+					countOff[0] = BLINK_PAUSE / BLINK_LENGTH - 1;
 				}
 				else
 				{
@@ -98,12 +91,21 @@ public class ErrorsHandler extends Thread
 						logger.trace("LED 1 is " + pinLed1.getState().getName());
 					}
 				}
+			}
+			else
+			{
+				pinLed1.low();
+				countFlash[0] = 0;
+			}
+
+			if ((appData.getErrorCode() & 0xFF00) != 0)
+			{
 				if (countFlash[1] <= 0)
 				{
-					countFlash[1] = (byte) ((appData.getErrorCode() & 0x0000FF00) >> 8);
-					countOff[1] = 4;
-					pinLed2.low();
+					countFlash[1] = (byte) (((appData.getErrorCode() & 0x0000FF00) >> 8) * 2);
 					logger.debug("Error 2 set to " + ((appData.getErrorCode() & 0x0000FF00) >> 8));
+					pinLed2.low();
+					countOff[1] = BLINK_PAUSE / BLINK_LENGTH - 1;
 				}
 				else
 				{
@@ -118,35 +120,49 @@ public class ErrorsHandler extends Thread
 						logger.trace("LED 2 is " + pinLed2.getState().getName());
 					}
 				}
+			}
+			else
+			{
+				pinLed2.low();
+				countFlash[1] = 0;
+			}
+
+			if ((appData.getErrorCode() & 0xFF0000) != 0)
+			{
 				if (countFlash[2] <= 0)
 				{
-					countFlash[2] = (byte) ((appData.getErrorCode() & 0x00FF0000) >> 16);
-					countOff[1] = 4;
-					pinLed3.low();
+					countFlash[2] = (byte) (((appData.getErrorCode() & 0x00FF0000) >> 8) * 2);
 					logger.debug("Error 3 set to " + ((appData.getErrorCode() & 0x00FF0000) >> 16));
+					pinLed3.low();
+					countOff[1] = BLINK_PAUSE / BLINK_LENGTH - 1;
 				}
 				else
 				{
 					if (countOff[2] > 0)
 					{
 						countOff[2]--;
-						countOff[2] = 4;
 					}
 					else
 					{
 						countFlash[2]--;
 						pinLed3.toggle();
-						logger.trace("LED 3 is " + pinLed3.getState().getName());
+						logger.trace("LED 3 is " + pinLed2.getState().getName());
 					}
 				}
-				try 
-				{
-					Thread.sleep(250);
-				} 
-				catch (InterruptedException e) 
-				{
-					;
-				}
+			}
+			else
+			{
+				pinLed3.low();
+				countFlash[2] = 0;
+			}
+
+			try 
+			{
+				Thread.sleep(BLINK_LENGTH);
+			} 
+			catch (InterruptedException e) 
+			{
+				;
 			}
 		}
 		logger.debug("Shutting down");
