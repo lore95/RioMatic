@@ -1,5 +1,8 @@
 package it.unibz.mngeng.java.Commons;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 public class Utility 
 {
 	static public String byteToString(byte[] buffer)
@@ -27,5 +30,13 @@ public class Utility
 			}
 		}
 		return retVal;
+	}
+	
+	static public String stacktraceToString(Exception e)
+	{
+		StringWriter sw = new StringWriter();
+		PrintWriter pw = new PrintWriter(sw);
+		e.printStackTrace(pw);
+		return sw.toString(); 
 	}
 }

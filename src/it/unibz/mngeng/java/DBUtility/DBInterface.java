@@ -1,5 +1,6 @@
 package it.unibz.mngeng.java.DBUtility;
 
+import it.unibz.mngeng.java.Commons.Utility;
 import it.unibz.mngeng.java.Exceptions.RMException;
 
 import java.io.Serializable;
@@ -16,6 +17,8 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 public class DBInterface implements Serializable
 {
 	static final long serialVersionUID = 1;
@@ -27,6 +30,8 @@ public class DBInterface implements Serializable
 	protected int startRecord = 0;
 	protected boolean changesToJournal = false;
 	private static DBConnection conn = null;
+	
+	static Logger logger = Logger.getLogger(DBInterface.class);
 	
 	private String quoteString(String strToQuote)
 	{
@@ -430,6 +435,7 @@ public class DBInterface implements Serializable
 	public void populateObject(String sql, Object tbObj) throws RMException
 	{
 		conn = DBConnection.getInstance();
+		logger.trace("Querying database '" + sql + "'");
 		conn.executeQuery(sql);
 		ResultSet rs = conn.getRs();
 		try 
@@ -441,6 +447,8 @@ public class DBInterface implements Serializable
 		}
 		catch (SQLException e) 
 		{
+			logger.error("Got exception '" + e.getMessage()+ "'");
+			logger.error(Utility.stacktraceToString(e));
 			throw new RMException(e);
 		}
 	}

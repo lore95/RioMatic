@@ -10,6 +10,9 @@ import java.util.StringTokenizer;
 
 import javax.sql.DataSource;
 
+import org.apache.log4j.Logger;
+
+import it.unibz.mngeng.java.Commons.Utility;
 import it.unibz.mngeng.java.Exceptions.RMException;
 
 public class DBConnection 
@@ -22,6 +25,7 @@ public class DBConnection
 	
 	private static DBConnection singletonInstance = new DBConnection();
 
+	static Logger logger = Logger.getLogger(DBConnection.class);
 
 	public void getConnection() throws RMException  
 	{
@@ -50,12 +54,16 @@ public class DBConnection
  		Exception e1 = null;
 		try
 		{
-			conn = DriverManager.getConnection("jdbc:mysql://" + System.getProperty("DBHOST") + "/RioMatic","RioMatic","RioMatic");;
+			String mysqlHostURL = "jdbc:mysql://" + System.getProperty("DBHOST") + "/RioMatic";
+			logger.trace("trying to connect to '" + mysqlHostURL + "'");
+			conn = DriverManager.getConnection(mysqlHostURL, "RioMatic", "RioMatic");;
 			st = conn.createStatement();
 		}
 		catch (SQLException e) 
 		{
 			retVal = "Error on database connection (" + e.getMessage() + ")";
+			logger.error(retVal);
+			logger.error(Utility.stacktraceToString(e));
 			e1 = e;
 		}
 		if (retVal != null)
