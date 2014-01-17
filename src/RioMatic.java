@@ -312,9 +312,22 @@ public class RioMatic
 				{
 					input = br.readLine();
 					logger.debug("Read '" + input + "' from command line");
-					if (input.toLowerCase().compareTo("shutdown") == 0)
+					if (input.compareToIgnoreCase("shutdown") == 0)
 					{
 						shutDown = true;
+					}
+					else if (input.substring(0, 6).compareToIgnoreCase("seterr") == 0)
+					{
+						int errorCode = 0;
+						try
+						{
+							errorCode = Integer.parseInt(input.substring(7));
+						}
+						catch(NumberFormatException e)
+						{
+							System.out.println("malformatted error code '" + input.substring(7).trim());
+						}
+						appData.setErrorCode(errorCode);
 					}
 					System.out.print("RioMatic> ");
 				}
