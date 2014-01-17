@@ -44,10 +44,10 @@ public class ValveHandler extends Thread
 		this.instance = instance;
 		this.parms = parms;
 		
-		logger.debug("Getting area data for Aread id " + parms.getSensorId(instance));
+		logger.debug("Getting area data for Areas id " + parms.getSensorId(instance));
 		try 
 		{
-			this.areaData = new Areas(parms.getSensorId(parms.getSensorId(instance)));
+			this.areaData = new Areas(parms.getSensorId(instance));
 		}
 		catch (RMException e) 
 		{

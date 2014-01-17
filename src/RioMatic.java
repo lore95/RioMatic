@@ -121,7 +121,7 @@ public class RioMatic
 				{
 					;
 				}		
-	}
+			}
 			catch (RMException e) 
 			{
 				logger.error("Exception " + e.getMessage() + " creating Valve Handler " + i + " thread");
