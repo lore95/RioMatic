@@ -49,9 +49,9 @@ public class PumpHandler extends Thread
 	public void run() 
 	{
 		logger.debug("Pump Handler thread started");
+		int i = 0;
 		while(!shutDown)
 		{
-			int i = 0;
 			for(i = 0; i < parms.getNumberOfSensors(); i++)
 			{
 				if (appData.getValveStatus(i))
@@ -68,7 +68,10 @@ public class PumpHandler extends Thread
 			else
 			{
 				logger.debug("At least one valve is opene. Starting the pump");
-				pin.low();
+				if (appData.isStopFlag())
+				{
+					pin.low();
+				}
 			}
 			
 			try 

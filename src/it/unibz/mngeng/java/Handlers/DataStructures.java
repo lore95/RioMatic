@@ -22,6 +22,7 @@ public class DataStructures
 	static public int RECORD_LEN = 0;
 
 	private long errorCode = 0;
+	private boolean stopFlag = false;
 	private double[] moisture;
 	private boolean[] valveStatus;
 	private int[] wateringTimeElapsed;
@@ -185,6 +186,14 @@ public class DataStructures
 
 	public I2CDevice getDevice() {
 		return device;
+	}
+
+	public boolean isStopFlag() {
+		return stopFlag;
+	}
+
+	public void setStopFlag(boolean stopFlag) {
+		this.stopFlag = stopFlag;
 	}
 	
 }

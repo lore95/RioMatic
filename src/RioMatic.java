@@ -329,6 +329,14 @@ public class RioMatic
 						}
 						appData.setErrorCode(errorCode);
 					}
+					else if (input.compareToIgnoreCase("disable") == 0)
+					{
+						appData.setStopFlag(true);
+					}
+					else if (input.compareToIgnoreCase("enable") == 0)
+					{
+						appData.setStopFlag(false);
+					}
 					System.out.print("RioMatic> ");
 				}
 			}

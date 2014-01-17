@@ -108,8 +108,12 @@ public class ValveHandler extends Thread
 
 			if (appData.getValveStatus(instance))
 			{
-				logger.debug("Valve " + pin.getName() + " required to open"); 
-				pin.low();
+				logger.debug("Valve " + pin.getName() + " required to open");
+				if (!appData.isStopFlag())
+				{
+					// activate only if non in disable mmde
+					pin.low();
+				}
 				secondsElapsed++;
 				if (secondsElapsed % 10 == 0)
 				{

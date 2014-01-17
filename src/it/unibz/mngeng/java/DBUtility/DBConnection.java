@@ -54,7 +54,7 @@ public class DBConnection
  		Exception e1 = null;
 		try
 		{
-			String mysqlHostURL = "jdbc:mysql://" + System.getProperty("DBHOST") + "/RioMatic";
+			String mysqlHostURL = "jdbc:mysql://192.168.200.99:3306/RioMatic";
 			logger.trace("trying to connect to '" + mysqlHostURL + "'");
 			conn = DriverManager.getConnection(mysqlHostURL, "RioMatic", "RioMatic");;
 			st = conn.createStatement();
