@@ -42,9 +42,9 @@ public class RioMatic
 			logger.fatal("Exception " + e.getMessage() + " getting parameters (" + args[0] + ")");
 			System.exit(-1);
 		}
-		Properties p = new Properties(System.getProperties());
-		p.setProperty("DBHOST", parms.getDBHost());
-		logger.debug("Got parms from configuration file. DBHOST is " + parms.getDBHost());
+		System.setProperty("DBHOST", parms.getDBHost());
+		logger.debug("Got parms from configuration file. DBHOST is " + parms.getDBHost() +
+					 " (" + System.getProperty("DBHOST") + ")");
 		
 		// Creare la classe DataStructure
 		DataStructures appData = null;
@@ -108,6 +108,7 @@ public class RioMatic
 		ValveHandler[] vh = new ValveHandler[parms.getNumberOfSensors()];
 		for(int i = 0; i < parms.getNumberOfSensors(); i++)
 		{
+			vh[i] = null;
 			try 
 			{
 				logger.debug("Starting Valve " + i + " Handler thread");
@@ -196,6 +197,7 @@ public class RioMatic
 
 			if ((ad == null) || !ad.isAlive())
 			{
+				ad.
 				logger.debug("Archive Data thread is dead");
 				if (input.toLowerCase().compareTo("reset") == 0)
 				{
@@ -306,6 +308,7 @@ public class RioMatic
 			{
 				logger.debug("Exception " + e.getMessage() + " in main - Thread.sleep");
 			}
+			
 			try 
 			{
 				if(br.ready()) 
