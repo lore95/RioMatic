@@ -73,8 +73,8 @@ public class ErrorsHandler extends Thread
 			{
 				if (countFlash[0] <= 0)
 				{
-					countFlash[1] = (byte) ((appData.getErrorCode() & 0x0000FF00) * 2);
-					logger.debug("Error 2 set to " + (appData.getErrorCode() & 0x0000FF00));
+					countFlash[1] = (byte) ((appData.getErrorCode() & 0x000000FF) * 2);
+					logger.debug("Error 1 set to " + (appData.getErrorCode() & 0x000000FF));
 					pinLed1.low();
 					countOff[0] = (byte) (parms.getBlinkPause() / parms.getBlinkLength() - 1);
 				}
@@ -131,7 +131,7 @@ public class ErrorsHandler extends Thread
 			{
 				if (countFlash[2] <= 0)
 				{
-					countFlash[2] = (byte) (((appData.getErrorCode() & 0x00FF0000) >> 8) * 2);
+					countFlash[2] = (byte) (((appData.getErrorCode() & 0x00FF0000) >> 16) * 2);
 					logger.debug("Error 3 set to " + ((appData.getErrorCode() & 0x00FF0000) >> 16));
 					pinLed3.low();
 					countOff[2] = (byte) (parms.getBlinkPause() / parms.getBlinkLength() - 1);
