@@ -197,7 +197,6 @@ public class RioMatic
 
 			if ((ad == null) || !ad.isAlive())
 			{
-				ad.
 				logger.debug("Archive Data thread is dead");
 				if (input.toLowerCase().compareTo("reset") == 0)
 				{
