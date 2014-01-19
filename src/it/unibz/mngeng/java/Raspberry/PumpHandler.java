@@ -50,26 +50,32 @@ public class PumpHandler extends Thread
 	{
 		logger.debug("Pump Handler thread started");
 		int i = 0;
+		boolean printDebug = true;
 		while(!shutDown)
 		{
 			for(i = 0; i < parms.getNumberOfSensors(); i++)
 			{
 				if (appData.getValveStatus(i))
 				{
-					logger.debug("Valve " + i + " is open.");
+					logger.trace("Valve " + i + " is open.");
 					break;
 				}
 			}
 			if (i >= parms.getNumberOfSensors())
 			{
-				logger.debug("No valve opened. Stopping the pump");
+				logger.trace("No valve opened. Stopping the pump");
+				printDebug = false;
 				pin.high();
 			}
 			else
 			{
-				logger.debug("At least one valve is opene. Starting the pump");
 				if (!appData.isStopFlag())
 				{
+					if (printDebug)
+					{
+						logger.debug("At least one valve is opene. Starting the pump");
+						printDebug = false;
+					}
 					pin.low();
 				}
 			}
