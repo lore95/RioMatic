@@ -323,8 +323,11 @@ public class RioMatic
 					if (input.compareToIgnoreCase("shutdown") == 0)
 					{
 						shutDown = true;
+						logger.debug("Shutting the system down");
+						break;
 					}
-					else if (input.substring(0, 6).compareToIgnoreCase("seterr") == 0)
+					else if ((input.length() >= 6) && 
+							 (input.substring(0, 6).compareToIgnoreCase("seterr") == 0))
 					{
 						int errorCode = 0;
 						try

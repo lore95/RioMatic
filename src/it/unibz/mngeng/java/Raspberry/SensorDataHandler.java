@@ -43,6 +43,7 @@ public class SensorDataHandler extends Thread
 		}
 		moistureValue = 100 * (unsignedValue - parms.getSensorRange(sensorId)[0]) / 
 							  (parms.getSensorRange(sensorId)[1] - parms.getSensorRange(sensorId)[0]);
+		moistureValue = 100.0 - moistureValue;
 		return true;
 	}
 	
