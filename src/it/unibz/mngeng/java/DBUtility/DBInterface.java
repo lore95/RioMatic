@@ -676,6 +676,18 @@ public class DBInterface implements Serializable
 			throw new RMException(e);
 		}
 	}
+	public void insert(String idColName, Object objectToInsert) throws RMException
+	{
+    	String sql = "";
+    	/*
+    	 * Populating a ResultSetMetaData object to obtain table columns to be used in the query.
+    	 */
+		String sqlQueryColNames = "SELECT * FROM " + ((DBInterface) objectToInsert).tableName + " WHERE 1 = 0";	    	
+		sql = "INSERT INTO " + ((DBInterface) objectToInsert).tableName + " SET ";
+		sql += this.getUpdateStatement(sqlQueryColNames, objectToInsert, idColName);
+		conn = DBConnection.getInstance();
+		conn.executeQuery(sql);
+	}
 
 	public static void insertCollection(ArrayList<?> collection, String idColName, Class<?> objectClass) 
 			throws RMException

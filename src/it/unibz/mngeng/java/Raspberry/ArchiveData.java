@@ -38,16 +38,15 @@ public class ArchiveData extends Thread
 		logger.debug("THread started. Loggin every " + parms.getArchivePeriod() + " seconds");
 		while(!shutDown)
 		{
-			for(int i = 0; i < appData.getMoisture().length; i++)
+			for(int i = 0; i < parms.getNumberOfSensors(); i++)
 			{
 				try
 				{
-					int id = 0;
 					History hist = new History();
 					hist.setAreaId(areas.get(i).getId());
 					hist.setMositure(appData.getMoisture(i));
 					hist.setTimestamp(new Date());
-					hist.insert("id", hist, id);
+					hist.insert("id", hist);
 				}
 				catch (RMException e) 
 				{
