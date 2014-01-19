@@ -102,7 +102,7 @@ public class ValveHandler extends Thread
 				{
 					appData.setErrorCode(appData.getErrorCode() | Errors.DATA_FILE_WRITE_ERROR);
 					logger.fatal("ValveHandler instance " + instance + ": got IOException " + e.getMessage());
-					System.exit(-1);
+					shutDown = true;
 				}
 			}
 
@@ -134,7 +134,7 @@ public class ValveHandler extends Thread
 					{
 						appData.setErrorCode(appData.getErrorCode() | Errors.DATA_FILE_WRITE_ERROR);
 						logger.fatal("ValveHandler instance " + instance + ": got IOException " + e.getMessage());
-						System.exit(-1);
+						shutDown = true;
 					}
 				}
 			}

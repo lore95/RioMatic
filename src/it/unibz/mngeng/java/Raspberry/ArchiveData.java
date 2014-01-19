@@ -53,7 +53,7 @@ public class ArchiveData extends Thread
 				{
 					appData.setErrorCode(appData.getErrorCode() | Errors.DB_CONNECTION_ERROR);
 					logger.debug("Got error on insert " + e.getErrorCode() + " - " + e.getErrorDescription());
-					System.exit(-1);
+					shutDown = true;
 				}
 			}
 			try 

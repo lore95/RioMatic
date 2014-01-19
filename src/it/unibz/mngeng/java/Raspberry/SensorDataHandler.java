@@ -72,7 +72,7 @@ public class SensorDataHandler extends Thread
 						{
 							appData.setErrorCode(appData.getErrorCode() | Errors.DATA_FILE_WRITE_ERROR);
 							logger.fatal("Exception in setMoisture: " + e.getMessage());
-							System.exit(-1);
+							shutDown = true;
 						}
 					}
 				}
@@ -83,6 +83,5 @@ public class SensorDataHandler extends Thread
 		{
 			;
 		}
-		System.exit(0);
 	}
 }

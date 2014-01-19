@@ -30,6 +30,7 @@ public class RioMatic
 
 	    // Inizializza la libreria di log
 		PropertyConfigurator.configure(args[1]);
+		
 
 	    // Leggere i Parametri con cui gira questa istanza dell'applicazione
 		Parameters parms = null;
@@ -61,6 +62,11 @@ public class RioMatic
 		
 		// Error Handler spawn
 		appData.setErrorCode(0);
+		if(args[2].compareTo("disable") == 0)
+		{
+			appData.setStopFlag(true);
+		}
+		
 		ErrorsHandler eh = null;
 		try 
 		{

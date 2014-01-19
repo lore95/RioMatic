@@ -68,7 +68,7 @@ public class PumpHandler extends Thread
 			else
 			{
 				logger.debug("At least one valve is opene. Starting the pump");
-				if (appData.isStopFlag())
+				if (!appData.isStopFlag())
 				{
 					pin.low();
 				}
